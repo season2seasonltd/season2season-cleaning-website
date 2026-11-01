@@ -1,5 +1,5 @@
 window.SITE_CONFIG = {
-  companyName: "Season2season Limited",
+  companyName: "Season2season Cleaning Limited",
   phone: "+447436943024",
   email: "info@season2seasoncleaning.co.uk",
   locations: ["Scotland"],
