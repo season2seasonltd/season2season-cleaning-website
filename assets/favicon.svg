@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Season2Season Limited favicon">
+  <rect width="128" height="128" rx="25" fill="#ffffff"/>
+  <g fill="#163b35">
+    <path d="M28 71 64 38l36 33h-11L64 49 39 71z"/>
+    <path d="M78 44h9v15l-9-8z"/>
+    <rect x="58" y="63" width="10" height="10" rx="1"/>
+    <rect x="71" y="63" width="10" height="10" rx="1"/>
+    <rect x="58" y="76" width="10" height="10" rx="1"/>
+    <rect x="71" y="76" width="10" height="10" rx="1"/>
+    <path d="M29 68C15 64 12 54 13 40c15 2 24 12 23 26-7-11-13-14-17-17 5 9 8 13 10 19z"/>
+    <path d="M36 61c-1-13 6-22 19-25 0 13-7 21-19 25z"/>
+    <path d="M16 95c19-15 33-12 49-6 18 7 32 5 48-12-9 21-27 31-49 23-19-7-31-8-48-5z"/>
+    <path d="M22 104c16-8 29-7 43-2 19 7 33 4 46-7-11 16-28 20-48 13-17-6-29-7-41-4z"/>
+    <path d="m94 23 3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/>
+    <path d="m109 43 2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>
+  </g>
+</svg>
