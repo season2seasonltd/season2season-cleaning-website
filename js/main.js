@@ -108,7 +108,7 @@
   }
 
   const phone = config.phone.trim();
-  document.querySelectorAll("[data-phone-display]").forEach((element) => {
+  document.querySelectorAll("[data-phone-display], [data-footer-phone]").forEach((element) => {
     if (phone) {
       const link = document.createElement("a");
       const digits = phone.replace(/\D/g, "");
@@ -161,18 +161,6 @@
   document.querySelectorAll("[data-locations-display]").forEach((element) => {
     if (locations.length) {
       element.textContent = locations.join(", ");
-    }
-  });
-
-  document.querySelectorAll("[data-contact-summary]").forEach((element) => {
-    const contactValue = email || phone;
-    if (contactValue) {
-      const link = document.createElement("a");
-      const digits = phone.replace(/\D/g, "");
-      link.href = email ? `mailto:${email}` :
-        `tel:${phone.trim().startsWith("+") ? `+${digits}` : digits}`;
-      link.textContent = contactValue;
-      element.replaceWith(link);
     }
   });
 

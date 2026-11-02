@@ -1,6 +1,58 @@
 (function () {
   "use strict";
 
+  const tabs = Array.from(document.querySelectorAll(".form-tabs [role='tab']"));
+  const activateTab = (tab, updateLocation) => {
+    tabs.forEach((currentTab) => {
+      const active = currentTab === tab;
+      currentTab.classList.toggle("is-active", active);
+      currentTab.setAttribute("aria-selected", String(active));
+      currentTab.setAttribute("tabindex", active ? "0" : "-1");
+      const panel = document.getElementById(currentTab.getAttribute("aria-controls"));
+      if (panel) {
+        panel.hidden = !active;
+      }
+    });
+
+    if (updateLocation) {
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#${tab.id}`);
+    }
+  };
+
+  if (tabs.length) {
+    const selectTabFromHash = () => {
+      const tab = tabs.find((candidate) => candidate.id === window.location.hash.slice(1));
+      if (tab) {
+        activateTab(tab, false);
+      }
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activateTab(tab, true));
+      tab.addEventListener("keydown", (event) => {
+        let nextIndex;
+        if (event.key === "ArrowRight") {
+          nextIndex = (index + 1) % tabs.length;
+        } else if (event.key === "ArrowLeft") {
+          nextIndex = (index - 1 + tabs.length) % tabs.length;
+        } else if (event.key === "Home") {
+          nextIndex = 0;
+        } else if (event.key === "End") {
+          nextIndex = tabs.length - 1;
+        }
+
+        if (nextIndex !== undefined) {
+          event.preventDefault();
+          tabs[nextIndex].focus();
+          activateTab(tabs[nextIndex], true);
+        }
+      });
+    });
+
+    selectTabFromHash();
+    window.addEventListener("hashchange", selectTabFromHash);
+  }
+
   const form = document.querySelector("#quote-form");
   if (!(form instanceof HTMLFormElement)) {
     return;
