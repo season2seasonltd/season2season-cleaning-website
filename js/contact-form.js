@@ -84,7 +84,7 @@
   };
 
   const clearErrors = () => {
-    ["name", "email", "service", "message"].forEach((name) => setFieldError(name, ""));
+    ["name", "email", "service", "phone", "premises", "location", "timeframe", "message"].forEach((name) => setFieldError(name, ""));
     generalError.textContent = "";
   };
 
@@ -95,6 +95,9 @@
       email: form.elements.namedItem("email"),
       service: form.elements.namedItem("service"),
       phone: form.elements.namedItem("phone"),
+      premises: form.elements.namedItem("premises"),
+      location: form.elements.namedItem("location"),
+      timeframe: form.elements.namedItem("timeframe"),
       message: form.elements.namedItem("message"),
       privacy: form.elements.namedItem("privacy_acknowledgement")
     };
@@ -118,6 +121,18 @@
     }
     if (!(fields.service instanceof HTMLSelectElement) || !fields.service.value) {
       markInvalid("service", "Choose a cleaning category.");
+    }
+    if (!(fields.phone instanceof HTMLInputElement) || !fields.phone.value.trim()) {
+      markInvalid("phone", "Enter your phone number.");
+    }
+    if (!(fields.premises instanceof HTMLInputElement) || !fields.premises.value.trim()) {
+      markInvalid("premises", "Enter your property or premises type.");
+    }
+    if (!(fields.location instanceof HTMLInputElement) || !fields.location.value.trim()) {
+      markInvalid("location", "Enter your town or postcode.");
+    }
+    if (!(fields.timeframe instanceof HTMLInputElement) || !fields.timeframe.value.trim()) {
+      markInvalid("timeframe", "Enter when you would like the cleaning.");
     }
     if (!(fields.message instanceof HTMLTextAreaElement) || !fields.message.value.trim()) {
       markInvalid("message", "Tell us a little about the cleaning you need.");
