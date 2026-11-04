@@ -126,6 +126,19 @@ h1 span, h2 span { color: #6c9183; }
 .circle-arrow:hover { background: var(--green); color: var(--white); }
 .service-card-work { background: #eff2ed; }
 
+.why-choose-section { background: #e7eee8; }
+.why-choose-heading { max-width: 46rem; margin: 0 auto 2.5rem; text-align: center; }
+.why-choose-heading .eyebrow { justify-content: center; }
+.why-choose-heading h2 { margin-bottom: 0.9rem; font-size: clamp(2.4rem, 4vw, 3.6rem); }
+.why-choose-heading h2 span { color: #718d81; }
+.why-choose-heading > p:last-child { max-width: 38rem; margin: 0 auto; color: var(--ink-soft); }
+.why-choose-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.why-choose-card { min-height: 15rem; padding: 1.6rem; border: 1px solid #d2ded5; background: var(--white); }
+.why-choose-icon { display: grid; width: 3.25rem; height: 3.25rem; place-items: center; margin-bottom: 1.25rem; border-radius: 50%; background: var(--mint); color: var(--green); }
+.why-choose-icon svg { width: 1.65rem; height: 1.65rem; }
+.why-choose-card h3 { margin-bottom: 0.65rem; font-size: 1.15rem; }
+.why-choose-card p { margin: 0; color: var(--ink-soft); font-size: 0.9rem; }
+
 .approach-section { background: #e7eee8; }
 .approach-layout { display: grid; grid-template-columns: 0.92fr 1.08fr; align-items: start; gap: 7rem; }
 .approach-heading h2 { margin-bottom: 1.3rem; font-size: clamp(2.6rem, 4.3vw, 4rem); }
@@ -385,6 +398,7 @@ h1 span, h2 span { color: #6c9183; }
   .service-card-content { min-height: 15rem; padding: 1.4rem 1.4rem 4rem; }
   .service-card h3 { font-size: 1.3rem; }
   .specialist-service-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .why-choose-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .approach-layout, .service-detail-grid, .about-story-grid { gap: 3.5rem; }
   .contact-layout { gap: 3rem; }
   .footer-main { grid-template-columns: 1.2fr 0.8fr 1fr; }
@@ -452,6 +466,7 @@ h1 span, h2 span { color: #6c9183; }
   .service-detail-section { padding-block: 3.5rem; }
   .service-detail-section + .service-detail-section { padding-top: 0; }
   .specialist-service-grid { grid-template-columns: 1fr; }
+  .why-choose-grid { grid-template-columns: 1fr; }
   .service-extra-links { flex-direction: column; gap: 0.7rem; }
   .service-detail-grid, .service-detail-reverse { grid-template-columns: 1fr; gap: 2rem; }
   .service-detail-reverse .service-detail-image, .service-detail-reverse .service-detail-copy { order: initial; }
