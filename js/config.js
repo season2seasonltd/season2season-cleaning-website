@@ -2,8 +2,8 @@ window.SITE_CONFIG = {
   companyName: "Season2season Cleaning Limited",
   phone: "+447436943024",
   email: "info@season2seasoncleaning.co.uk",
-  locations: ["Scotland"],
-  address: "18 Candlemarkers Lane Loch Street Aberdeen Scotland, AB25 1DF",
+  locations: ["Scotland."],
+  address: "18 Candlemarkers Lane Loch Street Aberdeen, Scotland, AB25 1DF",
   openingHours: "Monday - Friday: 8AM - 8PM, Saturday - Sunday: 9AM - 7PM",
   social: {
     facebook: "",
