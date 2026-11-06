@@ -192,7 +192,7 @@ h1 span, h2 span { color: #6c9183; }
 .footer-note { display: flex; align-items: flex-start; gap: 0.8rem; }
 .footer-note p { margin: 0; color: #b2c3ba; font-family: var(--font-heading); font-size: 1rem; }
 .footer-spark { color: #b6cbbd; font-size: 1.5rem; }
-.footer-bottom { display: flex; min-height: 4rem; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid rgb(255 255 255 / 16%); color: #b2c3ba; font-size: 0.72rem; }
+.footer-bottom { display: flex; min-height: 4rem; align-items: center; gap: 1rem; border-top: 1px solid rgb(255 255 255 / 16%); color: #b2c3ba; font-size: 0.72rem; }
 .footer-bottom > div { display: flex; align-items: center; gap: 1.4rem; }
 .footer-bottom a { color: #edf2ee; text-decoration: none; }
 .footer-location { padding-left: 1rem; border-left: 1px solid rgb(255 255 255 / 24%); }
@@ -459,7 +459,7 @@ h1 span, h2 span { color: #6c9183; }
   .cta-spark { top: 2rem; right: 0; font-size: 11rem; transform: none; }
   .footer-main { grid-template-columns: 1fr 1fr; gap: 2.2rem 1.2rem; }
   .footer-brand { grid-column: 1 / -1; }
-  .footer-bottom { align-items: center; flex-direction: row; justify-content: center; padding-block: 1rem; }
+  .footer-bottom { align-items: flex-start; flex-direction: column; justify-content: center; padding-block: 1rem; padding-bottom: 2rem; }
   .page-hero { padding: 2.2rem 0 2rem; }
   .page-hero h1 { font-size: clamp(3.2rem, 11vw, 5rem); }
   .page-hero-inner > p:not(.eyebrow) { font-size: 0.98rem; }
@@ -495,6 +495,10 @@ h1 span, h2 span { color: #6c9183; }
         flex-direction: column;
         gap: 1.2rem;
     }
+    .whatsapp-button {
+      bottom: calc(12rem + env(safe-area-inset-bottom, 0px))
+    }
+    
 }
 @media (max-width: 420px) {
   .container { width: calc(100% - 2rem); }
