@@ -76,6 +76,10 @@ h1 span, h2 span { color: #6c9183; }
 .primary-navigation > a:not(.button) { color: #52635e; font-size: 0.83rem; font-weight: 500; text-decoration: none; transition: color 150ms ease; }
 .primary-navigation > a:not(.button):hover, .primary-navigation > a[aria-current="page"] { color: var(--green-dark); }
 .primary-navigation > a[aria-current="page"]:not(.button) { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 0.45rem; }
+.header-install { display: inline-flex; min-height: 2.45rem; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.45rem 0.65rem; border: 1px solid var(--line); border-radius: var(--radius); background: transparent; color: var(--green-dark); cursor: pointer; font: inherit; font-size: 0.76rem; font-weight: 600; white-space: nowrap; }
+.header-install::before { color: var(--green); content: "↓"; font-size: 0.95rem; }
+.header-install:hover { border-color: var(--green); background: var(--mint); }
+.header-install[hidden] { display: none; }
 .menu-toggle { display: none; }
 
 .hero { position: relative; overflow: hidden; padding: 2rem 0 3rem; }
@@ -201,6 +205,17 @@ h1 span, h2 span { color: #6c9183; }
 .pwa-install-controls p { margin: 0; }
 .pwa-install-button { padding: 0.55rem 0.8rem; border: 1px solid #b2c3ba; border-radius: var(--radius); background: transparent; color: #edf3ee; cursor: pointer; font: inherit; font-weight: 600; }
 .pwa-install-button:hover { border-color: #edf3ee; background: rgb(255 255 255 / 8%); }
+.pwa-promotion { position: fixed; z-index: 18; bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); left: 1rem; width: min(25rem, calc(100% - 6rem)); margin: 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); box-shadow: 0 16px 42px rgb(23 51 47 / 18%); color: var(--ink); }
+.pwa-promotion[hidden] { display: none; }
+.pwa-promotion h2 { margin: 0 0 0.45rem; font-size: 1.3rem; letter-spacing: -0.025em; }
+.pwa-promotion p { margin: 0; color: var(--ink-soft); font-size: 0.84rem; line-height: 1.55; }
+.pwa-promotion ol { margin: 0.85rem 0 0; padding-left: 1.25rem; color: var(--ink-soft); font-size: 0.8rem; }
+.pwa-promotion li + li { margin-top: 0.35rem; }
+.pwa-promotion-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.65rem; margin-top: 1rem; }
+.pwa-promotion-install { min-height: 2.7rem; padding: 0.6rem 0.9rem; border: 1px solid var(--green); border-radius: var(--radius); background: var(--green); color: var(--white); cursor: pointer; font: inherit; font-size: 0.82rem; font-weight: 600; }
+.pwa-promotion-install:hover { border-color: var(--green-dark); background: var(--green-dark); }
+.pwa-promotion-later { min-height: 2.7rem; padding: 0.6rem 0.75rem; border: 0; background: transparent; color: var(--ink-soft); cursor: pointer; font: inherit; font-size: 0.82rem; }
+.pwa-promotion-later:hover { color: var(--green-dark); text-decoration: underline; text-underline-offset: 0.15rem; }
 
 .page-hero { padding: 2rem 0 3rem; background: var(--paper); }
 .page-hero-inner { position: relative; }
@@ -393,8 +408,9 @@ h1 span, h2 span { color: #6c9183; }
 }
 @media (max-width: 1000px) {
   :root { --space-7: 5rem; }
-  .primary-navigation { gap: 1rem; }
+  .primary-navigation { gap: 0.7rem; }
   .primary-navigation > a:not(.button) { font-size: 0.77rem; }
+  .header-install { gap: 0.2rem; padding-inline: 0.5rem; font-size: 0.71rem; }
   .hero-grid { min-height: 31rem; gap: 2rem; }
   .hero-copy { padding-left: 0; }
   .hero-image { height: 28rem; }
@@ -422,9 +438,11 @@ h1 span, h2 span { color: #6c9183; }
   .menu-toggle[aria-expanded="true"] .menu-icon i:last-child { transform: translateY(-2px) rotate(-45deg); }
   .primary-navigation { position: absolute; top: 100%; right: 0; left: 0; display: none; align-items: stretch; gap: 0; padding: 0.5rem 1.125rem 1.2rem; border-top: 1px solid var(--line); background: var(--paper); box-shadow: 0 18px 24px rgb(23 51 47 / 9%); }
   .primary-navigation.is-open { display: flex; flex-direction: column; }
+  .primary-navigation > .header-install { align-self: flex-start; margin-top: 0.9rem; }
   .primary-navigation > a:not(.button) { padding: 0.75rem 0; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
   .primary-navigation > a[aria-current="page"]:not(.button) { text-decoration: none; }
   .primary-navigation .header-cta { align-self: flex-start; margin-top: 0.9rem; }
+  .pwa-promotion { bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px)); left: 0.75rem; width: calc(100% - 6rem); padding: 1rem; }
   h1 { font-size: clamp(3.15rem, 12vw, 5rem); }
   h2 { font-size: clamp(2.25rem, 9vw, 3.4rem); }
   .hero { padding: 2.3rem 0 2rem; }

@@ -41,7 +41,7 @@ The quotation form submits directly to Netlify Forms using a normal HTML POST an
 
 ## Progressive Web App
 
-The site can be installed from supported browsers using the footer's Install App button. On iPhone or iPad, open the site in Safari, tap Share, then choose Add to Home Screen. The service worker serves cached static assets and an offline page when the network is unavailable; page requests and form submissions are not cached, and POST requests are never intercepted. Keep the PWA icon files and `manifest.json` paths in sync if branding assets are replaced.
+The site can be installed from the navigation's Install App option. A small promotion appears after time on the site or on a return visit; choosing Maybe Later dismisses it for 7 days. Supported browsers open their native installation prompt, while other browsers show manual installation steps. On iPhone or iPad, open the site in Safari, tap Share, then choose Add to Home Screen. The service worker serves cached static assets and an offline page when the network is unavailable; page requests and form submissions are not cached, and POST requests are never intercepted. Keep the PWA icon files and `manifest.json` paths in sync if branding assets are replaced.
 
 ## Deployment and domain
 
