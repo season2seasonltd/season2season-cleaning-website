@@ -205,7 +205,7 @@ h1 span, h2 span { color: #6c9183; }
 .pwa-install-controls p { margin: 0; }
 .pwa-install-button { padding: 0.55rem 0.8rem; border: 1px solid #b2c3ba; border-radius: var(--radius); background: transparent; color: #edf3ee; cursor: pointer; font: inherit; font-weight: 600; }
 .pwa-install-button:hover { border-color: #edf3ee; background: rgb(255 255 255 / 8%); }
-.pwa-promotion { position: fixed; z-index: 18; bottom: calc(4rem + env(safe-area-inset-bottom, 0px)); left: 1rem; width: min(25rem, calc(100% - 6rem)); margin: 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); box-shadow: 0 16px 42px rgb(23 51 47 / 18%); color: var(--ink); }
+.pwa-promotion { position: fixed; z-index: 18; bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); left: 1rem; width: min(25rem, calc(100% - 6rem)); margin: 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); box-shadow: 0 16px 42px rgb(23 51 47 / 18%); color: var(--ink); }
 .pwa-promotion[hidden] { display: none; }
 .pwa-promotion h2 { margin: 0 0 0.45rem; font-size: 1.3rem; letter-spacing: -0.025em; }
 .pwa-promotion p { margin: 0; color: var(--ink-soft); font-size: 0.84rem; line-height: 1.55; }
@@ -442,7 +442,7 @@ h1 span, h2 span { color: #6c9183; }
   .primary-navigation > a:not(.button) { padding: 0.75rem 0; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
   .primary-navigation > a[aria-current="page"]:not(.button) { text-decoration: none; }
   .primary-navigation .header-cta { align-self: flex-start; margin-top: 0.9rem; }
-  .pwa-promotion { bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px)); left: 0.75rem; width: calc(100% - 6rem); padding: 1rem; }
+  .pwa-promotion { bottom: calc(4rem + env(safe-area-inset-bottom, 0px)); left: 0.75rem; width: calc(100% - 6rem); padding: 1rem; }
   h1 { font-size: clamp(3.15rem, 12vw, 5rem); }
   h2 { font-size: clamp(2.25rem, 9vw, 3.4rem); }
   .hero { padding: 2.3rem 0 2rem; }
