@@ -18,6 +18,10 @@ js/contact-form.js         Enquiry validation and provider submission
 images/                    Locally stored, licensed photography
                            Includes the social-sharing preview image
 assets/favicon.svg         Site favicon
+assets/icons/              Installable PWA and Apple touch icons
+manifest.json              Progressive Web App metadata
+sw.js                      Offline support and static-asset caching
+offline.html                Offline fallback page
 robots.txt                 Crawler guidance
 sitemap.xml                Sitemap template
 ```
@@ -35,6 +39,9 @@ Edit `js/config.js` to supply verified details:
 
 The quotation form submits directly to Netlify Forms using a normal HTML POST and redirects to `thank-you.html` after successful handling. Netlify provides built-in spam filtering; the form also uses a hidden honeypot field. These measures reduce spam but cannot guarantee that every unwanted submission will be blocked.
 
+## Progressive Web App
+
+The site can be installed from supported browsers using the footer's Install App button. On iPhone or iPad, open the site in Safari, tap Share, then choose Add to Home Screen. The service worker serves cached static assets and an offline page when the network is unavailable; page requests and form submissions are not cached, and POST requests are never intercepted. Keep the PWA icon files and `manifest.json` paths in sync if branding assets are replaced.
 
 ## Deployment and domain
 

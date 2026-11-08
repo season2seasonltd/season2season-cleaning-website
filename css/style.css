@@ -196,6 +196,11 @@ h1 span, h2 span { color: #6c9183; }
 .footer-bottom > div { display: flex; align-items: center; gap: 1.4rem; }
 .footer-bottom a { color: #edf2ee; text-decoration: none; }
 .footer-location { padding-left: 1rem; border-left: 1px solid rgb(255 255 255 / 24%); }
+.pwa-install-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 1rem; padding: 1rem 0; border-top: 1px solid rgb(255 255 255 / 16%); color: #b2c3ba; font-size: 0.78rem; }
+.pwa-install-controls[hidden] { display: none; }
+.pwa-install-controls p { margin: 0; }
+.pwa-install-button { padding: 0.55rem 0.8rem; border: 1px solid #b2c3ba; border-radius: var(--radius); background: transparent; color: #edf3ee; cursor: pointer; font: inherit; font-weight: 600; }
+.pwa-install-button:hover { border-color: #edf3ee; background: rgb(255 255 255 / 8%); }
 
 .page-hero { padding: 2rem 0 3rem; background: var(--paper); }
 .page-hero-inner { position: relative; }

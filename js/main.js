@@ -273,4 +273,80 @@
       revealObserver.observe(element);
     });
   }
+
+  const footer = document.querySelector(".site-footer .container");
+  if (footer) {
+    const installControls = document.createElement("div");
+    installControls.className = "pwa-install-controls";
+    installControls.hidden = true;
+
+    const installButton = document.createElement("button");
+    installButton.className = "pwa-install-button";
+    installButton.type = "button";
+    installButton.textContent = "Install App";
+    installControls.append(installButton);
+
+    const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    installButton.hidden = isIos;
+    const isInstalled = () => window.matchMedia("(display-mode: standalone)").matches ||
+      navigator.standalone === true;
+    let deferredInstallPrompt;
+
+    if (isIos && !isInstalled()) {
+      const instructions = document.createElement("p");
+      instructions.textContent = "On iPhone or iPad, tap Share in Safari, then choose Add to Home Screen.";
+      installControls.append(instructions);
+      installControls.hidden = false;
+    }
+
+    installButton.addEventListener("click", async () => {
+      if (!deferredInstallPrompt) {
+        return;
+      }
+
+      const promptEvent = deferredInstallPrompt;
+      deferredInstallPrompt = undefined;
+      installControls.hidden = true;
+      try {
+        await promptEvent.prompt();
+        await promptEvent.userChoice;
+      } catch (error) {
+        console.error("App installation prompt failed:", error);
+      }
+    });
+
+    window.addEventListener("beforeinstallprompt", (event) => {
+      if (isIos || isInstalled()) {
+        return;
+      }
+
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      installControls.hidden = false;
+    });
+
+    window.addEventListener("appinstalled", () => {
+      deferredInstallPrompt = undefined;
+      installControls.hidden = true;
+    });
+
+    const serviceWorker = () => {
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" })
+          .catch((error) => console.error("Service worker registration failed:", error));
+      }
+    };
+
+    if (document.readyState === "complete") {
+      serviceWorker();
+    } else {
+      window.addEventListener("load", serviceWorker, { once: true });
+    }
+
+    const footerBottom = footer.querySelector(".footer-bottom");
+    if (footerBottom) {
+      footerBottom.before(installControls);
+    }
+  }
 })();
