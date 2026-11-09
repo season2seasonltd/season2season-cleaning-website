@@ -13,15 +13,11 @@ thank-you.html             Confirmation page for successful enquiries
 privacy.html               Privacy notice
 css/style.css              Shared responsive design system
 js/config.js               Central business and form configuration
-js/main.js                 Shared navigation and contact configuration
+js/main.js                 Shared navigation, contact configuration, and legacy worker cleanup
 js/contact-form.js         Enquiry validation and provider submission
 images/                    Locally stored, licensed photography
                            Includes the social-sharing preview image
 assets/favicon.svg         Site favicon
-assets/icons/              Installable PWA and Apple touch icons
-manifest.json              Progressive Web App metadata
-sw.js                      Offline support and static-asset caching
-offline.html                Offline fallback page
 robots.txt                 Crawler guidance
 sitemap.xml                Sitemap template
 ```
@@ -38,10 +34,6 @@ Edit `js/config.js` to supply verified details:
 - Canonical and Open Graph URL tags are populated from `websiteDomain`.
 
 The quotation form submits directly to Netlify Forms using a normal HTML POST and redirects to `thank-you.html` after successful handling. Netlify provides built-in spam filtering; the form also uses a hidden honeypot field. These measures reduce spam but cannot guarantee that every unwanted submission will be blocked.
-
-## Progressive Web App
-
-The site can be installed from the navigation's Install App option. A small promotion appears after time on the site or on a return visit; choosing Maybe Later dismisses it for 7 days. Supported browsers open their native installation prompt, while other browsers show manual installation steps. On iPhone or iPad, open the site in Safari, tap Share, then choose Add to Home Screen. The service worker serves cached static assets and an offline page when the network is unavailable; page requests and form submissions are not cached, and POST requests are never intercepted. Keep the PWA icon files and `manifest.json` paths in sync if branding assets are replaced.
 
 ## Deployment and domain
 

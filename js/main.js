@@ -1,6 +1,65 @@
 (function () {
   "use strict";
 
+  const cleanupKey = "season2season-pwa-cleanup-v1";
+  const workerScriptUrl = new URL("/sw.js", window.location.origin).href;
+  const cleanupLegacyPwa = async () => {
+    try {
+      if (localStorage.getItem(cleanupKey) === "done") {
+        return;
+      }
+    } catch {
+      // Continue with cleanup when browser storage is unavailable.
+    }
+
+    try {
+      const cleanupTasks = [];
+      if ("serviceWorker" in navigator) {
+        cleanupTasks.push((async () => {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.filter((registration) =>
+            registration.scope === `${window.location.origin}/` &&
+            [registration.active, registration.waiting, registration.installing].some((worker) =>
+              worker && worker.scriptURL === workerScriptUrl
+            )
+          ).map((registration) => registration.unregister()));
+        })());
+      }
+      if ("caches" in window) {
+        cleanupTasks.push((async () => {
+          const cacheNames = await window.caches.keys();
+          if (cacheNames.includes("season2season-pwa-v1")) {
+            await window.caches.delete("season2season-pwa-v1");
+          }
+        })());
+      }
+
+      await Promise.all(cleanupTasks);
+    } catch (error) {
+      console.warn("Legacy service worker cleanup failed:", error);
+      return;
+    }
+
+    try {
+      ["season2season-pwa-last-visit", "season2season-pwa-visit-count", "season2season-pwa-dismissed-until"]
+        .forEach((key) => localStorage.removeItem(key));
+      const legacyWorkerControlsPage = "serviceWorker" in navigator &&
+        navigator.serviceWorker.controller?.scriptURL === workerScriptUrl;
+      if (!legacyWorkerControlsPage) {
+        localStorage.setItem(cleanupKey, "done");
+      }
+    } catch {
+      // A later page load can safely retry if browser storage is unavailable.
+    }
+    try {
+      sessionStorage.removeItem("season2season-pwa-promotion-shown");
+    } catch {
+      // Session storage is optional.
+    }
+  };
+
+  void cleanupLegacyPwa();
+
   const config = window.SITE_CONFIG;
   if (!config) {
     throw new Error("Site configuration is missing. Check that js/config.js is loaded before js/main.js.");
@@ -45,6 +104,7 @@
     }
     openGraphUrl.content = canonicalUrl;
   }
+
   let openGraphSiteName = document.querySelector('meta[property="og:site_name"]');
   if (!openGraphSiteName) {
     openGraphSiteName = document.createElement("meta");
@@ -274,343 +334,4 @@
     });
   }
 
-  const footer = document.querySelector(".site-footer .container");
-  if (footer) {
-    const installControls = document.createElement("div");
-    installControls.className = "pwa-install-controls";
-    installControls.hidden = true;
-
-    const installButton = document.createElement("button");
-    installButton.className = "pwa-install-button";
-    installButton.type = "button";
-    installButton.textContent = "Install App";
-    installControls.append(installButton);
-
-    const headerInstallButton = document.querySelector("[data-install-app]");
-    const userAgent = navigator.userAgent;
-    const isIos = /iphone|ipad|ipod/i.test(userAgent) ||
-      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    const isAndroid = /android/i.test(userAgent);
-    const isInstalled = () => window.matchMedia("(display-mode: standalone)").matches ||
-      window.matchMedia("(display-mode: minimal-ui)").matches ||
-      window.matchMedia("(display-mode: fullscreen)").matches ||
-      navigator.standalone === true;
-    let deferredInstallPrompt;
-    let promotionTimer;
-
-    const promotion = document.createElement("section");
-    promotion.className = "pwa-promotion";
-    promotion.id = "pwa-promotion";
-    promotion.setAttribute("role", "dialog");
-    promotion.setAttribute("aria-labelledby", "pwa-promotion-title");
-    promotion.setAttribute("aria-modal", "false");
-    promotion.hidden = true;
-
-    const promotionTitle = document.createElement("h2");
-    promotionTitle.id = "pwa-promotion-title";
-    promotionTitle.textContent = "Take Season2Season with you";
-
-    const promotionMessage = document.createElement("p");
-    promotionMessage.textContent = "Add Season2Season to your phone’s home screen for easier access.";
-
-    const markPromotionShown = () => {
-      try {
-        sessionStorage.setItem("season2season-pwa-promotion-shown", "true");
-      } catch (error) {
-        console.error("Could not save PWA promotion state:", error);
-      }
-    };
-
-    const manualInstructions = document.createElement("ol");
-    manualInstructions.hidden = true;
-
-    const focusInstallOption = () => {
-      if (window.matchMedia("(max-width: 760px)").matches) {
-        menuButton?.focus();
-      } else if (headerInstallButton && !headerInstallButton.hidden) {
-        headerInstallButton.focus();
-      } else {
-        navigation?.querySelector("a")?.focus();
-      }
-    };
-
-    const promotionActions = document.createElement("div");
-    promotionActions.className = "pwa-promotion-actions";
-
-    const promotionInstallButton = document.createElement("button");
-    promotionInstallButton.className = "pwa-promotion-install";
-    promotionInstallButton.type = "button";
-    promotionInstallButton.textContent = "Install App";
-    promotionInstallButton.setAttribute("aria-describedby", "pwa-promotion-message");
-
-    promotionMessage.id = "pwa-promotion-message";
-    const maybeLaterButton = document.createElement("button");
-    maybeLaterButton.className = "pwa-promotion-later";
-    maybeLaterButton.type = "button";
-    maybeLaterButton.textContent = "Maybe Later";
-
-    promotionActions.append(promotionInstallButton, maybeLaterButton);
-    promotion.append(promotionTitle, promotionMessage, manualInstructions, promotionActions);
-    document.body.append(promotion);
-
-    const getManualSteps = () => {
-      if (isIos) {
-        return [
-          "Open this website in Safari.",
-          "Tap Share, then choose Add to Home Screen."
-        ];
-      }
-      if (isAndroid) {
-        return [
-          "Open Google Chrome on your Android device.",
-          "Visit this website in Chrome, then tap Install App or choose Install app / Add to Home screen from the menu."
-        ];
-      }
-      return [];
-    };
-
-    const updatePromotionContent = () => {
-      manualInstructions.hidden = true;
-      if (isIos) {
-        promotionTitle.textContent = "Add Season2Season to your iPhone";
-        promotionMessage.textContent = "For the best installation experience, open this website in Safari and add it to your Home Screen.";
-        promotionInstallButton.textContent = "Show Safari steps";
-        maybeLaterButton.hidden = false;
-      } else if (deferredInstallPrompt) {
-        promotionTitle.textContent = "Take Season2Season with you";
-        promotionMessage.textContent = "Install the app for easier access from your device.";
-        promotionInstallButton.textContent = "Install App";
-        maybeLaterButton.hidden = false;
-      } else if (isAndroid) {
-        promotionTitle.textContent = "Install Season2Season on Android";
-        promotionMessage.textContent = "Google Chrome provides the best installation experience. Open this website in Chrome to add it to your Home Screen.";
-        promotionInstallButton.textContent = "How to install in Chrome";
-        maybeLaterButton.hidden = false;
-      } else {
-        promotionTitle.textContent = "Keep browsing Season2Season";
-        promotionMessage.textContent = "This browser does not offer app installation here, but you can continue using the website as usual.";
-        promotionInstallButton.textContent = "Continue browsing";
-        maybeLaterButton.hidden = true;
-      }
-    };
-
-    const showManualInstructions = () => {
-      const steps = getManualSteps();
-      if (!steps.length) {
-        dismissPromotion(true);
-        return;
-      }
-
-      manualInstructions.replaceChildren(...steps.map((step) => {
-        const item = document.createElement("li");
-        item.textContent = step;
-        return item;
-      }));
-      manualInstructions.hidden = false;
-      maybeLaterButton.focus();
-    };
-
-    const dismissPromotion = (rememberDismissal) => {
-      promotion.hidden = true;
-      window.clearTimeout(promotionTimer);
-      markPromotionShown();
-      if (rememberDismissal) {
-        try {
-          localStorage.setItem("season2season-pwa-dismissed-until", String(Date.now() + 7 * 24 * 60 * 60 * 1000));
-        } catch (error) {
-          console.error("Could not save PWA promotion dismissal:", error);
-        }
-      }
-      focusInstallOption();
-    };
-
-    const openPromotion = () => {
-      if (isInstalled()) {
-        return;
-      }
-      window.clearTimeout(promotionTimer);
-      markPromotionShown();
-      updatePromotionContent();
-      promotion.hidden = false;
-      promotionInstallButton.focus();
-    };
-
-    if (isIos && !isInstalled()) {
-      installButton.hidden = true;
-      const instructions = document.createElement("p");
-      instructions.textContent = "For iPhone or iPad, open this website in Safari, tap Share, then choose Add to Home Screen.";
-      installControls.append(instructions);
-      installControls.hidden = false;
-    }
-
-    const installFromPrompt = async () => {
-      if (isInstalled()) {
-        return;
-      }
-      if (!deferredInstallPrompt) {
-        updatePromotionContent();
-        openPromotion();
-        if (isIos || isAndroid) {
-          showManualInstructions();
-        }
-        return;
-      }
-      const promptEvent = deferredInstallPrompt;
-      deferredInstallPrompt = undefined;
-      installButton.hidden = true;
-      promotion.hidden = true;
-      if (headerInstallButton) {
-        headerInstallButton.hidden = true;
-      }
-      markPromotionShown();
-      try {
-        await promptEvent.prompt();
-        await promptEvent.userChoice;
-      } catch (error) {
-        console.error("App installation prompt failed:", error);
-      }
-    };
-
-    installButton.addEventListener("click", installFromPrompt);
-    promotionInstallButton.addEventListener("click", () => {
-      if (deferredInstallPrompt) {
-        installFromPrompt();
-      } else if (isIos || isAndroid) {
-        showManualInstructions();
-      } else {
-        dismissPromotion(true);
-      }
-    });
-    maybeLaterButton.addEventListener("click", () => dismissPromotion(true));
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && !promotion.hidden) {
-        dismissPromotion(false);
-      }
-    });
-
-    headerInstallButton?.addEventListener("click", () => {
-      if (menuButton && navigation) {
-        menuButton.setAttribute("aria-expanded", "false");
-        navigation.classList.remove("is-open");
-      }
-      openPromotion();
-    });
-
-    window.addEventListener("beforeinstallprompt", (event) => {
-      if (isIos || isInstalled()) {
-        return;
-      }
-
-      event.preventDefault();
-      deferredInstallPrompt = event;
-      installButton.hidden = false;
-      installControls.hidden = false;
-      if (headerInstallButton) {
-        headerInstallButton.hidden = false;
-      }
-      if (!promotion.hidden) {
-        updatePromotionContent();
-      }
-    });
-
-    window.addEventListener("appinstalled", () => {
-      deferredInstallPrompt = undefined;
-      installButton.hidden = true;
-      installControls.hidden = true;
-      promotion.hidden = true;
-      if (headerInstallButton) {
-        headerInstallButton.hidden = true;
-      }
-    });
-
-    if (!isInstalled()) {
-      const now = Date.now();
-      let visitCount = 1;
-      let isReturningVisitor = false;
-      let promotionAlreadyShown = false;
-      let promotionDismissed = false;
-      try {
-        const lastVisit = Number(localStorage.getItem("season2season-pwa-last-visit")) || 0;
-        visitCount = Number(localStorage.getItem("season2season-pwa-visit-count")) || 0;
-        if (!lastVisit || now - lastVisit > 30 * 60 * 1000) {
-          visitCount += 1;
-        }
-        isReturningVisitor = visitCount > 1;
-        localStorage.setItem("season2season-pwa-last-visit", String(now));
-        localStorage.setItem("season2season-pwa-visit-count", String(visitCount));
-        promotionDismissed = Number(localStorage.getItem("season2season-pwa-dismissed-until")) > now;
-        promotionAlreadyShown = sessionStorage.getItem("season2season-pwa-promotion-shown") === "true";
-      } catch (error) {
-        console.error("Could not read PWA promotion preferences:", error);
-      }
-
-      if (!promotionDismissed && !promotionAlreadyShown) {
-        let meaningfulInteraction = false;
-        const delay = isReturningVisitor ? 15000 : 30000;
-        const showPromotion = () => {
-          promotionTimer = undefined;
-          let shownInThisSession = false;
-          try {
-            shownInThisSession = sessionStorage.getItem("season2season-pwa-promotion-shown") === "true";
-          } catch (error) {
-            console.error("Could not read PWA promotion state:", error);
-          }
-          if (isInstalled() || document.visibilityState === "hidden" || shownInThisSession) {
-            return;
-          }
-          updatePromotionContent();
-          promotion.hidden = false;
-          markPromotionShown();
-        };
-        const startPromotionTimer = () => {
-          if (meaningfulInteraction) {
-            return;
-          }
-          meaningfulInteraction = true;
-          window.removeEventListener("scroll", onScroll);
-          document.removeEventListener("pointerdown", onPointerDown);
-          document.removeEventListener("keydown", onKeyDown);
-          promotionTimer = window.setTimeout(showPromotion, delay);
-        };
-        const onScroll = () => {
-          if (window.scrollY >= 80) {
-            startPromotionTimer();
-          }
-        };
-        const onPointerDown = (event) => {
-          if (event.target instanceof Element &&
-              event.target.closest("main, .primary-navigation, .menu-toggle")) {
-            startPromotionTimer();
-          }
-        };
-        const onKeyDown = (event) => {
-          if (["Enter", " ", "ArrowDown", "PageDown", "Tab"].includes(event.key)) {
-            startPromotionTimer();
-          }
-        };
-
-        window.addEventListener("scroll", onScroll, { passive: true });
-        document.addEventListener("pointerdown", onPointerDown);
-        document.addEventListener("keydown", onKeyDown);
-      }
-    }
-
-    const serviceWorker = () => {
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" })
-          .catch((error) => console.error("Service worker registration failed:", error));
-      }
-    };
-
-    if (document.readyState === "complete") {
-      serviceWorker();
-    } else {
-      window.addEventListener("load", serviceWorker, { once: true });
-    }
-
-    const footerBottom = footer.querySelector(".footer-bottom");
-    if (footerBottom) {
-      footerBottom.before(installControls);
-    }
-  }
 })();
